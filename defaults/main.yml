@@ -1,2 +1,16 @@
 ---
-# defaults file for ansible_walg
+walg_version: v1.0
+walg_dbs: pg
+walg_binary_name: "wal-g-{{ walg_dbs }}-ubuntu-{{ ansible_lsb.release }}-amd64"
+walg_url: "https://github.com/wal-g/wal-g/releases/download/{{ walg_version }}/{{ walg_binary_name }}.tar.gz"
+walg_binary_path: /usr/local/bin
+walg_user: postgres
+walg_group: "{{ walg_user }}"
+walg_config_path: "/var/lib/postgresql"
+
+walg_config:
+  WALG_FILE_PREFIX: "/tmp/base/wal-g-test-data"
+  WALG_COMPRESSION_METHOD: "brotli"
+  WALG_DELTA_MAX_STEPS: "6"
+  PGHOST: "/var/run/postgresql"
+  PGDATA: "/var/lib/postgresql/12/main"
