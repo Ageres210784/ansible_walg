@@ -20,3 +20,16 @@
     owner: "{{ walg_user }}"
     group: "{{ walg_group }}"
     mode: '0644'
+
+- name: Creating backup dir if we need it
+  file:
+    name: "{{ walg_backup_path }}"
+    owner: "{{ walg_user }}"
+    group: "{{ walg_group }}"
+    mode: 0764
+    state: directory
+  when: walg_backup_path != ""
+
+- name: Inclide postgresql_config
+  include_tasks: postgresql_cong.yml
+  when: postgresql_conf_change
