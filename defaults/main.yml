@@ -1,11 +1,12 @@
 ---
+walg_backup: yes
 walg_version: v1.0
 walg_dbs: pg
 walg_binary_name: "wal-g-{{ walg_dbs }}-ubuntu-{{ ansible_lsb.release }}-amd64"
 walg_url: "https://github.com/wal-g/wal-g/releases/download/{{ walg_version }}/{{ walg_binary_name }}.tar.gz"
-walg_binary_path: /usr/local/bin
 walg_user: postgres
 walg_group: "{{ walg_user }}"
+walg_binary_path: /usr/local/bin
 walg_config_path: "/var/lib/postgresql"
 walg_backup_path: "/tmp/base/wal-g-test-data"
 walg_log_path: "/var/log/postgresql"
@@ -24,3 +25,12 @@ postgresql_conf_params:
   - archive_mode=on
   - archive_command='{{ walg_binary_path }}/wal-g wal-push "%p" >> {{ walg_log_path }}/archive_command.log 2>&1' 
   - restore_command='{{ walg_binary_path }}/wal-g wal-fetch "%f" "%p" >> {{ walg_log_path }}/restore_command.log 2>&1' 
+
+walg_cron_user: "{{ walg_user }}"
+walg_cron_time:
+  minute: 0
+  hour: 1
+walg_cron_state: present
+
+walg_restore: no
+walg_restore_date: LATEST

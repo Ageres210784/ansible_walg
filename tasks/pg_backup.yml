@@ -1,0 +1,12 @@
+---
+- name: Create cron-job for backup
+  cron:
+    name: "wal-g backup"
+    user: "{{ walg_cron_user }}"
+    minute: "{{ walg_cron_time.minute | default('*') }}"
+    hour: "{{ walg_cron_time.hour | default('*') }}"
+    day: "{{ walg_cron_time.day | default('*') }}"
+    month: "{{ walg_cron_time.month | default('*') }}"
+    weekday: "{{ walg_cron_time.weekday  | default('*') }}"
+    job: "{{ walg_binary_path }}/wal-g backup-push {{ walg_config.PGDATA }} >> {{ walg_log_path }}/walg_backup.log 2>&1"
+    state: "{{ walg_cron_state }}"

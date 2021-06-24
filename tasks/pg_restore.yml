@@ -1,0 +1,32 @@
+---
+- name: Stop postgresql
+  become: yes
+  service: name=postgresql state=stopped
+  tags:
+    - restore
+
+- name: Delete old base directory
+  file:
+    name: "{{ walg_config.PGDATA }}"
+    state: absent
+  tags:
+    - restore
+
+- name: Restopre base from backup
+  become_user: "{{ walg_user }}"
+  command: "{{ walg_binary_path }}/wal-g backup-fetch {{ walg_config.PGDATA }} {{ walg_restore_date }}"
+  tags:
+    - restore
+
+- name: Touch recovery.signal
+  file:
+    name: "{{ walg_config.PGDATA }}/recovery.signal"
+    state: touch
+  tags:
+    - restore
+
+- name: Start postgerql
+  become: yes
+  service: name=postgresql state=started
+  tags:
+    - restore
