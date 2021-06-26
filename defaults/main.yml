@@ -31,6 +31,7 @@ walg_cron_time:
   minute: 0
   hour: 1
 walg_cron_state: present
+walg_delete_before_days: 30
 
 walg_restore: no
 walg_restore_date: LATEST

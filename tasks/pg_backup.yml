@@ -10,3 +10,15 @@
     weekday: "{{ walg_cron_time.weekday  | default('*') }}"
     job: "{{ walg_binary_path }}/wal-g backup-push {{ walg_config.PGDATA }} >> {{ walg_log_path }}/walg_backup.log 2>&1"
     state: "{{ walg_cron_state }}"
+
+- name: Create cron-job for delete
+  cron:
+    name: "wal-g delete"
+    user: "{{ walg_cron_user }}"
+    minute: "{{ walg_cron_time.minute | default('*') }}"
+    hour: "{{ walg_cron_time.hour | default('*') }}"
+    day: "{{ walg_cron_time.day | default('*') }}"
+    month: "{{ walg_cron_time.month | default('*') }}"
+    weekday: "{{ walg_cron_time.weekday  | default('*') }}"
+    job: "{{ walg_binary_path }}/wal-g delete before FIND_FULL $(date -d '-{{ walg_delete_before_days }} days' '+\\%FT\\%TZ') --confirm >> /var/lib/postgresql/walg_delete.log 2>&1"
+    state: "{{ walg_cron_state }}"
