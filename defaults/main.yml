@@ -25,6 +25,9 @@ postgresql_conf_params:
   - archive_mode=on
   - archive_command='{{ walg_binary_path }}/wal-g wal-push "%p" >> {{ walg_log_path }}/archive_command.log 2>&1' 
   - restore_command='{{ walg_binary_path }}/wal-g wal-fetch "%f" "%p" >> {{ walg_log_path }}/restore_command.log 2>&1' 
+postgresql_conf_recovery: {}
+
+walg_restore_name: LATEST
 
 walg_cron_user: "{{ walg_user }}"
 walg_cron_time:
@@ -34,4 +37,3 @@ walg_cron_state: present
 walg_delete_before_days: 30
 
 walg_restore: no
-walg_restore_date: LATEST
