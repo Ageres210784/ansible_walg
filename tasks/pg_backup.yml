@@ -4,7 +4,7 @@
     name: "wal-g backup"
     user: "{{ walg_cron_user }}"
     minute: "{{ walg_cron_time.minute | default('*') }}"
-    hour: "{{ walg_cron_time.hour | default('*') }}"
+    hour: "{{ walg_cron_time.hour | int + 2 | default('*') }}"
     day: "{{ walg_cron_time.day | default('*') }}"
     month: "{{ walg_cron_time.month | default('*') }}"
     weekday: "{{ walg_cron_time.weekday  | default('*') }}"

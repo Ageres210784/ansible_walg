@@ -1,7 +1,9 @@
 ---
 - name: Include install_walg.yml
-  include_tasks: install_walg.yml
-  when: not walg_in_docker
+  include_tasks:
+    file: install_walg.yml
+    apply:
+      tags: install
   tags:
     - install
 
@@ -12,7 +14,10 @@
     - not walg_in_docker
 
 - name: Include dbs_backup
-  include_tasks: "{{ walg_dbs }}_backup.yml"
+  include_tasks:
+    file: "{{ walg_dbs }}_backup.yml"
+    apply:
+      tags: crontab
   when: walg_backup
   tags:
     - crontab
