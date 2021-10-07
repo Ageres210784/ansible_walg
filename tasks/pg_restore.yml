@@ -14,7 +14,7 @@
 
 - name: Restopre base from backup
   become_user: "{{ walg_user }}"
-  command: "{{ walg_binary_path }}/wal-g backup-fetch {{ walg_config.PGDATA }} {{ walg_restore_name }}"
+  command: "{{ walg_binary }} backup-fetch {{ walg_config.PGDATA }} {{ walg_restore_name }}"
   tags:
     - restore
 

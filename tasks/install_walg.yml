@@ -1,0 +1,31 @@
+---
+- name: Downloading wal-g
+  unarchive:
+    src: "{{ walg_url }}"
+    dest: "{{ walg_binary_path }}"
+    owner: root
+    group: root
+    remote_src: true
+
+- name: Create a symlink for wal-g
+  file:
+    src: "{{ walg_binary_path }}/{{ walg_binary_name }}"
+    dest: "{{ walg_binary }}"
+    state: link
+
+- name: Copy the wal-g configuration file
+  template:
+    src: .walg.json.j2
+    dest: "{{ walg_config_path }}/.walg.json"
+    owner: "{{ walg_user }}"
+    group: "{{ walg_group }}"
+    mode: '0644'
+
+- name: Create backup dir if we need it
+  file:
+    name: "{{ walg_backup_path }}"
+    owner: "{{ walg_user }}"
+    group: "{{ walg_group }}"
+    mode: 0764
+    state: directory
+  when: walg_backup_path != ""
