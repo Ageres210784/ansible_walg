@@ -26,6 +26,24 @@ postgresql_conf_recovery:
 walg_restore_name: base_0000000300000000000000DA
 ```
 
+Postgres in docker
+------------------
+
+If you use postgresql in docker you should install wal-g in a docker container and configuring it with environment variables. In this case this role configure crontab for periodic archiving.
+
+Config:
+```yaml
+walg_in_docker: true
+walg_cron_time:
+  minute: "*"
+  hour: "*"
+walg_pgdata: "/var/lib/postgresql/data"
+```
+Run:
+```bash
+ansible-playbook -t crontab run-walg.yml
+```
+
 Dependencies
 ------------
 
