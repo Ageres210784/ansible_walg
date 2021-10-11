@@ -1,4 +1,12 @@
 ---
+- name: Ensure log directory
+  file:
+    name: "{{ walg_log_path }}"
+    owner: "{{ walg_cron_user }}"
+    group: "{{ walg_cron_user }}"
+    mode: 0764
+    state: directory
+
 - name: Create cron-job for backup
   cron:
     name: "wal-g backup"

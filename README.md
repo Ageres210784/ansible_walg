@@ -38,6 +38,7 @@ walg_cron_time:
   minute: "*"
   hour: "*"
 walg_pgdata: "/var/lib/postgresql/data"
+walg_cron_user: "root"
 ```
 Run:
 ```bash
