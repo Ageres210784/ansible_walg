@@ -7,7 +7,7 @@ walg_url: "https://github.com/wal-g/wal-g/releases/download/{{ walg_version }}/{
 walg_user: postgres
 walg_group: "{{ walg_user }}"
 walg_binary_path: /usr/local/bin
-walg_binary: "{% if walg_in_docker %}{{ docker_binary }} exec -i {{ walg_container_name }} wal-g{% else %}{{ walg_binary_path }}/wal-g{% endif %}"
+walg_binary: "{% if walg_in_docker %}{{ docker_binary }} exec -i {{ walg_container_name }} wal-g.sh{% else %}{{ walg_binary_path }}/wal-g{% endif %}"
 walg_config_path: "/var/lib/postgresql"
 walg_backup_path: "/tmp/base/wal-g-test-data"
 walg_log_path: "/var/log/postgresql"
