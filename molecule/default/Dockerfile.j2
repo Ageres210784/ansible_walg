@@ -1,0 +1,6 @@
+FROM ubuntu:{{ item.env.ubuntu_version }}
+ENV PG_USER={{ item.env.walg_cron_user }}
+RUN set -xe \
+  && groupadd -r ${PG_USER} \
+  && useradd -m -d {{ item.env.walg_config_path }} -g ${PG_USER} ${PG_USER} \
+  && apt update && apt install -y python3 ca-certificates cron
