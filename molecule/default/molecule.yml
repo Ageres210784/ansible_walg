@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: instance1
+    image: ubuntu_customazed:focal
+    pre_build_image: false
+    env:
+      ubuntu_version: "focal"
+      walg_config_path: "/var/lib/postgresql"
+      walg_cron_user: "postgres"
+  - name: instance2
+    image: ubuntu_customazed:bionic
+    pre_build_image: false
+    env:
+      ubuntu_version: "bionic"
+      walg_config_path: "/var/lib/postgresql"
+      walg_cron_user: "postgres"
+provisioner:
+  name: ansible
+  inventory:
+    group_vars:
+      all:
+        walg_in_docker: true
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+verifier:
+  name: ansible

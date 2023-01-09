@@ -1,12 +1,14 @@
 ---
 - name: Stop postgresql
   become: yes
-  service: name=postgresql state=stopped
+  ansible.builtin.service:
+    name: postgresql
+    state: stopped
   tags:
     - restore
 
 - name: Delete old base directory
-  file:
+  ansible.builtin.file:
     name: "{{ walg_config.PGDATA }}"
     state: absent
   tags:
@@ -14,12 +16,14 @@
 
 - name: Restopre base from backup
   become_user: "{{ walg_user }}"
-  command: "{{ walg_binary }} backup-fetch {{ walg_config.PGDATA }} {{ walg_restore_name }}"
+  ansible.builtin.command: "{{ walg_binary }} backup-fetch {{ walg_config.PGDATA }} {{ walg_restore_name }}"
+  register: my_output
+  changed_when: my_output.rc != 0
   tags:
     - restore
 
 - name: Touch recovery.signal
-  file:
+  ansible.builtin.file:
     name: "{{ walg_config.PGDATA }}/recovery.signal"
     state: touch
     owner: "postgres"
@@ -29,7 +33,7 @@
     - restore
 
 - name: Copy postgresql config for recovery
-  template:
+  ansible.builtin.template:
     src: wal-g-recovery.conf.j2
     dest: "{{ postgresql_conf_dir }}/conf.d/wal-g-recovery.conf"
     owner: "postgres"
@@ -40,12 +44,14 @@
 
 - name: Start postgerql
   become: yes
-  service: name=postgresql state=started
+  ansible.builtin.service:
+    name: postgresql
+    state: started
   tags:
     - restore
 
 - name: Delete postgresql config for recovery
-  file:
+  ansible.builtin.file:
     name: "{{ postgresql_conf_dir }}/conf.d/wal-g-recovery.conf"
     state: absent
   tags:

@@ -1,6 +1,6 @@
 ---
 - name: Ensure directory conf.d in postgresql_conf_dir
-  file:
+  ansible.builtin.file:
     name: "{{ postgresql_conf_dir }}/conf.d"
     owner: "postgres"
     group: "postgres"
@@ -8,19 +8,19 @@
     state: directory
 
 - name: Ensure include dir conf.d in postgres.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ postgresql_conf_dir }}/postgresql.conf"
     regexp: '^#?include_dir = .conf.d'
-    line: "include_dir = 'conf.d'			# include files ending in '.conf' from"
+    line: "include_dir = 'conf.d'      # include files ending in '.conf' from"
   notify:
-    - restart postgresql
+    - Restart postgresql
 
 - name: Copy postgresql config for wal-g
-  template:
+  ansible.builtin.template:
     src: wal-g.conf.j2
     dest: "{{ postgresql_conf_dir }}/conf.d/wal-g.conf"
     owner: "postgres"
     group: "postgres"
     mode: '0644'
   notify:
-    - restart postgresql
+    - Restart postgresql

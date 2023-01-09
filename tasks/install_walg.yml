@@ -1,6 +1,6 @@
 ---
 - name: Downloading wal-g
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ walg_url }}"
     dest: "{{ walg_binary_path }}"
     owner: root
@@ -8,13 +8,21 @@
     remote_src: true
 
 - name: Create a symlink for wal-g
-  file:
+  ansible.builtin.file:
     src: "{{ walg_binary_path }}/{{ walg_binary_name }}"
     dest: "{{ walg_binary }}"
     state: link
 
+# - name: Ensure walg_config_path dir
+#   ansible.builtin.file:
+#     name: "{{ walg_config_path }}"
+#     owner: "{{ walg_user }}"
+#     group: "{{ walg_group }}"
+#     mode: 0764
+#     state: directory
+
 - name: Copy the wal-g configuration file
-  template:
+  ansible.builtin.template:
     src: .walg.json.j2
     dest: "{{ walg_config_path }}/.walg.json"
     owner: "{{ walg_user }}"
@@ -22,7 +30,7 @@
     mode: '0644'
 
 - name: Create backup dir if we need it
-  file:
+  ansible.builtin.file:
     name: "{{ walg_backup_path }}"
     owner: "{{ walg_user }}"
     group: "{{ walg_group }}"
