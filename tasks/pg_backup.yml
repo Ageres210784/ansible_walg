@@ -18,6 +18,7 @@
     weekday: "{{ walg_cron_time.weekday | default('*') }}"
     job: "{{ walg_binary }} backup-push {{ walg_config.PGDATA }} >> {{ walg_log_path }}/walg_backup.log 2>&1"
     state: "{{ walg_cron_state }}"
+  when: not walg_in_docker
 
 - name: Create cron-job for delete
   ansible.builtin.cron:
@@ -30,3 +31,32 @@
     weekday: "{{ walg_cron_time.weekday | default('*') }}"
     job: "{{ walg_binary }} delete before FIND_FULL $(date -d '-{{ walg_delete_before_days }} days' '+\\%FT\\%TZ') --confirm >> {{ walg_log_path }}/walg_delete.log 2>&1"
     state: "{{ walg_cron_state }}"
+  when: not walg_in_docker
+
+- name: Create cron-job for backup in docker
+  ansible.builtin.cron:
+    name: "wal-g backup"
+    user: "{{ docker_container.walg_cron_user }}"
+    minute: "{{ docker_container.walg_cron_time.minute | default('*') }}"
+    hour: "{{ docker_container.walg_cron_time.hour | int + 2 | default('*') }}"
+    day: "{{ docker_container.walg_cron_time.day | default('*') }}"
+    month: "{{ docker_container.walg_cron_time.month | default('*') }}"
+    weekday: "{{ docker_container.walg_cron_time.weekday | default('*') }}"
+    job: "{{ docker_container.walg_binary }} backup-push {{ walg_config.PGDATA }} >> {{ walg_log_path }}/walg_backup.log 2>&1"
+    state: "{{ docker_container.walg_cron_state }}"
+  when: walg_in_docker
+  with_items: "{{ docker_container }}"
+
+- name: Create cron-job for delete in docker
+  ansible.builtin.cron:
+    name: "wal-g delete"
+    user: "{{ docker_container.walg_cron_user }}"
+    minute: "{{ docker_container.walg_cron_time.minute | default('*') }}"
+    hour: "{{ docker_container.walg_cron_time.hour | default('*') }}"
+    day: "{{ docker_container.walg_cron_time.day | default('*') }}"
+    month: "{{ docker_container.walg_cron_time.month | default('*') }}"
+    weekday: "{{ docker_container.walg_cron_time.weekday | default('*') }}"
+    job: "{{ docker_container.walg_binary }} delete before FIND_FULL $(date -d '-{{ walg_delete_before_days }} days' '+\\%FT\\%TZ') --confirm >> {{ walg_log_path }}/walg_delete.log 2>&1"
+    state: "{{ docker_container.walg_cron_state }}"
+  when: walg_in_docker
+  with_items: "{{ docker_container }}"
