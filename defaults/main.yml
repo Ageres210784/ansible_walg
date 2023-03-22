@@ -12,6 +12,7 @@ walg_config_path: "/var/lib/postgresql"
 walg_backup_path: "/tmp/base/wal-g-test-data"
 walg_log_path: "/var/log/postgresql"
 walg_in_docker: false
+walg_container_name: "postgres"
 docker_binary: /usr/bin/docker
 walg_pgdata: "/var/lib/postgresql/12/main"
 
