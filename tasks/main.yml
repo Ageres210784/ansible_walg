@@ -4,6 +4,7 @@
     file: install_walg.yml
     apply:
       tags: install
+  when: not walg_in_docker
   tags:
     - install
 

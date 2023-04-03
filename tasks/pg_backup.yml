@@ -7,26 +7,28 @@
     mode: 0764
     state: directory
 
-- name: Create cron-job for backup
+- name: Create cron-job for backup {{ item.container_name }}
   ansible.builtin.cron:
-    name: "wal-g backup"
-    user: "{{ walg_cron_user }}"
-    minute: "{{ walg_cron_time.minute | default('*') }}"
-    hour: "{{ walg_cron_time.hour | int + 2 | default('*') }}"
-    day: "{{ walg_cron_time.day | default('*') }}"
-    month: "{{ walg_cron_time.month | default('*') }}"
-    weekday: "{{ walg_cron_time.weekday | default('*') }}"
+    name: "wal-g backup {{ item.container_name }}"
+    user: "{{ item.cron_user }}"
+    minute: "{{ item.cron_time.minute | default('*') }}"
+    hour: "{{ item.cron_time.hour | int + 2 | default('*') }}"
+    day: "{{ item.cron_time.day | default('*') }}"
+    month: "{{ item.cron_time.month | default('*') }}"
+    weekday: "{{ item.cron_time.weekday | default('*') }}"
     job: "{{ walg_binary }} backup-push {{ walg_config.PGDATA }} >> {{ walg_log_path }}/walg_backup.log 2>&1"
-    state: "{{ walg_cron_state }}"
+    state: "{{ item.cron_state }}"
+  with_items: "{{ walg_postgresql_list }}"
 
-- name: Create cron-job for delete
+- name: Create cron-job for delete {{ item.container_name }}
   ansible.builtin.cron:
-    name: "wal-g delete"
-    user: "{{ walg_cron_user }}"
-    minute: "{{ walg_cron_time.minute | default('*') }}"
-    hour: "{{ walg_cron_time.hour | default('*') }}"
-    day: "{{ walg_cron_time.day | default('*') }}"
-    month: "{{ walg_cron_time.month | default('*') }}"
-    weekday: "{{ walg_cron_time.weekday | default('*') }}"
+    name: "wal-g delete {{ item.container_name }}"
+    user: "{{ item.cron_user }}"
+    minute: "{{ item.cron_time.minute | default('*') }}"
+    hour: "{{ item.cron_time.hour | default('*') }}"
+    day: "{{ item.cron_time.day | default('*') }}"
+    month: "{{ item.cron_time.month | default('*') }}"
+    weekday: "{{ item.cron_time.weekday | default('*') }}"
     job: "{{ walg_binary }} delete before FIND_FULL $(date -d '-{{ walg_delete_before_days }} days' '+\\%FT\\%TZ') --confirm >> {{ walg_log_path }}/walg_delete.log 2>&1"
-    state: "{{ walg_cron_state }}"
+    state: "{{ item.cron_state }}"
+  with_items: "{{ walg_postgresql_list }}"
